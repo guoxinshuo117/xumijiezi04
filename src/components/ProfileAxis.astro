@@ -1,0 +1,354 @@
+---
+// 左轴「深度核」（签名）：固定在左侧、与下潜同行。
+// 轨体走五型场景配色的纵向旅程；标 5 型刻度、地面线、深度填充、活跃态、实时读数。
+// 「你在这里」滑块由 descent.ts 滚动驱动下沉（data-axis-marker）；
+// data-axis-fill / data-axis-readout / data-tick 供脚本更新。
+// 窄屏（< 860px）折叠为顶部横向深度进度条。
+import { LIFEFORM_ORDER, LIFEFORM_META } from '../lib/lifeform';
+
+// 轨体纵向色旅程：按每型 axisFrac（1=顶/冠层，0=底/种子库）布点，
+// 顶补纸面、底补深土，和刻度位置一致。
+const railStops = [
+  'oklch(0.97 0.012 85) 0%',
+  ...LIFEFORM_ORDER.map((lf) => {
+    const m = LIFEFORM_META[lf];
+    return `${m.sceneBg} ${Math.round((1 - m.axisFrac) * 100)}%`;
+  }),
+  'oklch(0.27 0.04 58) 100%',
+].join(', ');
+const railGradient = `linear-gradient(180deg, ${railStops})`;
+---
+
+<aside class="axis" aria-label="土壤剖面深度轴（Raunkiær 生活型）">
+  <div class="core">
+    <p class="axis-kicker u-label">深度核 · DEPTH</p>
+
+    <div class="rail" style={`--rail-grad:${railGradient}`}>
+      <span class="rail-bg"></span>
+      <!-- 下潜进度填充（已潜过的部分提亮） -->
+      <span class="rail-fill" data-axis-fill></span>
+
+      <!-- 地面线 0cm -->
+      <span class="ground-line" style="bottom:50%"></span>
+      <span class="ground-tag u-data" style="bottom:50%">0 cm</span>
+
+      <!-- 5 型刻度 -->
+      {
+        LIFEFORM_ORDER.map((lf) => {
+          const m = LIFEFORM_META[lf];
+          return (
+            <a
+              class="tick"
+              href={`#${lf}`}
+              data-tick={lf}
+              style={`bottom:${m.axisFrac * 100}%`}
+            >
+              <span class="tick-dot" />
+              <span class="tick-label">
+                <span class="tick-zh">{m.zh}</span>
+                <span class="tick-en u-label">{m.en}</span>
+              </span>
+            </a>
+          );
+        })
+      }
+
+      <!-- 「你在这里」滑块（默认贴顶；descent.ts 驱动下沉） -->
+      <span class="marker" data-axis-marker style="--frac:0.04">
+        <span class="marker-knob"></span>
+        <span class="marker-read">
+          <span class="marker-read-zh" data-axis-readout>冠层 · 离地数米</span>
+          <span class="marker-read-en u-label">YOU ARE HERE</span>
+        </span>
+      </span>
+    </div>
+  </div>
+</aside>
+
+<style>
+  .axis {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: var(--axis-w);
+    height: 100dvh;
+    z-index: var(--z-axis);
+    pointer-events: none; /* 仅刻度链接与滑块可交互 */
+  }
+  .core {
+    height: 100%;
+    padding: var(--s6) var(--s4) var(--s6) var(--s5);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--s4);
+  }
+  .axis-kicker {
+    color: var(--ink-2);
+    writing-mode: horizontal-tb;
+  }
+
+  .rail {
+    position: relative;
+    height: 100%;
+    width: 14px;
+    border-radius: 999px;
+    isolation: isolate;
+  }
+  .rail-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--rail-grad);
+    box-shadow:
+      inset 0 0 0 1px oklch(1 0 0 / 0.25),
+      0 6px 18px -6px oklch(0.3 0.04 60 / 0.5);
+  }
+  /* 下潜填充：从顶部覆到当前进度，叠一层提亮 + 内发光 */
+  .rail-fill {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--progress, 0) * 100%);
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.32),
+      oklch(1 0 0 / 0.06)
+    );
+    box-shadow: inset 0 0 8px oklch(1 0 0 / 0.25);
+    transition: height 0.1s linear;
+  }
+
+  .ground-line {
+    position: absolute;
+    z-index: 2;
+    left: -7px;
+    width: 28px;
+    border-top: 1.5px solid oklch(0.35 0.02 60 / 0.7);
+  }
+  .ground-tag {
+    position: absolute;
+    z-index: 2;
+    left: 30px;
+    transform: translateY(50%);
+    font-size: var(--fs-xs);
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  /* ---------- 刻度 ---------- */
+  .tick {
+    position: absolute;
+    z-index: 3;
+    left: 7px;
+    transform: translate(-50%, 50%);
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    text-decoration: none;
+    color: var(--ink);
+    pointer-events: auto;
+  }
+  .tick-dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--paper);
+    border: 2px solid var(--ink-2);
+    transition:
+      border-color var(--dur-1) var(--ease-out),
+      box-shadow var(--dur-1) var(--ease-out),
+      transform var(--dur-1) var(--ease-out);
+  }
+  .tick-label {
+    display: grid;
+    transform: translateX(16px);
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  .tick-zh {
+    font-family: var(--display);
+    font-size: var(--fs-sm);
+    font-weight: 540;
+    color: var(--ink);
+  }
+  .tick-en {
+    font-size: 0.625rem;
+    color: var(--ink-3);
+  }
+  .tick:hover .tick-dot,
+  .tick:focus-visible .tick-dot {
+    border-color: var(--bud-ink);
+    box-shadow: 0 0 0 4px var(--bud-soft);
+  }
+  /* 活跃型（descent.ts 切换 .is-active） */
+  .tick.is-active .tick-dot {
+    border-color: var(--bud);
+    background: var(--bud);
+    transform: scale(1.25);
+    box-shadow:
+      0 0 0 5px var(--bud-soft),
+      0 0 12px var(--bud);
+  }
+  .tick.is-active .tick-zh {
+    color: var(--bud-ink);
+  }
+
+  /* ---------- 「你在这里」滑块 ---------- */
+  .marker {
+    position: absolute;
+    z-index: 4;
+    left: 7px;
+    top: calc(var(--frac, 0) * 100%);
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: var(--s2);
+    pointer-events: none;
+    will-change: top;
+  }
+  .marker-knob {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bud);
+    border: 3px solid var(--paper);
+    box-shadow:
+      0 0 0 5px var(--bud-soft),
+      0 0 16px 2px oklch(0.82 0.16 135 / 0.6),
+      var(--shadow-1);
+  }
+  .marker-read {
+    display: grid;
+    gap: 1px;
+    transform: translateX(14px);
+    padding: 4px 9px;
+    border-radius: var(--radius-sm);
+    background: oklch(0.98 0.012 90 / 0.8);
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-1), var(--glass-highlight);
+    white-space: nowrap;
+  }
+  .marker-read-zh {
+    font-family: var(--display);
+    font-size: var(--fs-sm);
+    font-weight: 540;
+    color: var(--bud-ink);
+    line-height: 1.1;
+  }
+  .marker-read-en {
+    font-size: 0.5625rem;
+    color: var(--ink-3);
+  }
+
+  /* ---------- 纵轴文字在整段旅程上的可读性 ----------
+     固定纵轴叠在随深度变暗的舞台上：浅底用淡阴影托底；深区（descent.ts 切 .is-deep）转浅字。 */
+  .axis-kicker,
+  .ground-tag,
+  .tick-zh,
+  .tick-en {
+    text-shadow: 0 1px 3px oklch(0.2 0.02 60 / 0.3);
+  }
+  .axis.is-deep .axis-kicker,
+  .axis.is-deep .ground-tag {
+    color: oklch(0.82 0.02 82);
+  }
+  .axis.is-deep .tick-zh {
+    color: oklch(0.93 0.012 90);
+  }
+  .axis.is-deep .tick-en {
+    color: oklch(0.72 0.02 82);
+  }
+  .axis.is-deep .tick-dot {
+    border-color: oklch(0.9 0.01 85);
+  }
+  .axis.is-deep .ground-line {
+    border-top-color: oklch(0.95 0.01 85 / 0.5);
+  }
+  .axis.is-deep .tick.is-active .tick-zh {
+    color: oklch(0.86 0.15 140);
+  }
+
+  /* ---------- 窄屏：折叠为顶部横向深度进度条 ---------- */
+  @media (max-width: 860px) {
+    .axis {
+      width: 100%;
+      height: auto;
+    }
+    .core {
+      padding: 0;
+      grid-template-rows: none;
+      gap: 0;
+    }
+    .axis-kicker {
+      display: none;
+    }
+    .rail {
+      width: 100%;
+      height: 6px;
+      border-radius: 0;
+    }
+    .rail-bg {
+      background: linear-gradient(90deg, var(--railx, var(--rail-grad)));
+      /* 横向：复用纵向色旅程的色序（左=冠层，右=种子库） */
+      background: linear-gradient(
+        90deg,
+        oklch(0.95 0.02 150) 0%,
+        oklch(0.9 0.045 140) 28%,
+        oklch(0.86 0.05 118) 50%,
+        oklch(0.56 0.058 68) 75%,
+        oklch(0.32 0.04 60) 100%
+      );
+    }
+    .rail-fill {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: auto;
+      height: auto;
+      width: calc(var(--progress, 0) * 100%);
+      background: linear-gradient(90deg, oklch(1 0 0 / 0.3), oklch(1 0 0 / 0.05));
+      transition: width 0.1s linear;
+    }
+    .ground-line,
+    .ground-tag,
+    .tick-label {
+      display: none;
+    }
+    .tick {
+      top: 50%;
+      bottom: auto !important;
+      left: auto;
+      right: auto;
+      transform: translate(-50%, -50%);
+    }
+    /* 横向定位：把 axisFrac 映射成 left（冠层→种子库 = 左→右） */
+    .tick[data-tick='phanerophyte'] {
+      left: 6%;
+    }
+    .tick[data-tick='chamaephyte'] {
+      left: 28%;
+    }
+    .tick[data-tick='hemicryptophyte'] {
+      left: 50%;
+    }
+    .tick[data-tick='cryptophyte'] {
+      left: 75%;
+    }
+    .tick[data-tick='therophyte'] {
+      left: 96%;
+    }
+    .marker {
+      top: 50%;
+      left: calc(var(--frac, 0) * 100%);
+      transform: translate(-50%, -50%);
+    }
+    .marker-read {
+      display: none;
+    }
+  }
+</style>

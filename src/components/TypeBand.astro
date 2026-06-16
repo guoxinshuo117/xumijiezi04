@@ -1,0 +1,115 @@
+---
+// 类型段头（换章）：每个生活型一个全宽、有仪式感的区头。
+// 巨号区序号 + 区名（巨号衬线）+ 芽位区间 + 学名 + 策略句。
+// 颜色继承所在区（暗区由 index.astro 的 .is-dark 翻白）。
+import { LIFEFORM_META, type Lifeform } from '../lib/lifeform';
+
+interface Props {
+  lifeform: Lifeform;
+  index: number; // Raunkiær 序号（1–5），用于编号
+}
+
+const { lifeform, index } = Astro.props;
+const meta = LIFEFORM_META[lifeform];
+const no = String(index).padStart(2, '0');
+---
+
+<header class="band" id={lifeform} data-type-band={lifeform}>
+  <span class="band-no u-display" aria-hidden="true">{no}</span>
+  <div class="band-head">
+    <p class="band-kicker u-label">
+      {no} / 05 · {meta.en} · {meta.depthLabel}
+    </p>
+    <h2 class="band-title u-display">
+      <span class="band-zh">{meta.zh}</span>
+      <span class="band-range u-data">{meta.budRange}</span>
+    </h2>
+    <p class="band-blurb">{meta.blurb}</p>
+  </div>
+</header>
+
+<style>
+  .band {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: clamp(var(--s3), 3vw, var(--s6));
+    margin-bottom: clamp(var(--s5), 4vw, var(--s7));
+    padding-bottom: var(--s4);
+    border-bottom: 1px solid currentColor;
+    scroll-margin-top: var(--s5);
+  }
+  .band::after {
+    /* 把分隔线压淡（currentColor 太重） */
+    content: '';
+    position: absolute;
+    inset: auto 0 -1px 0;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.18;
+  }
+
+  /* 巨号区序号 */
+  .band-no {
+    font-size: clamp(3.5rem, 2rem + 8vw, 8rem);
+    font-weight: 600;
+    line-height: 0.8;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px currentColor;
+    opacity: 0.4;
+    font-variant-numeric: lining-nums;
+  }
+
+  .band-head {
+    min-width: 0;
+    padding-top: 0.35em;
+  }
+  .band-kicker {
+    color: inherit;
+    opacity: 0.7;
+    margin-bottom: var(--s3);
+  }
+  .band-title {
+    font-size: var(--fs-h1);
+    font-weight: 600;
+    line-height: 1.05;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s3);
+    flex-wrap: wrap;
+  }
+  .band-range {
+    font-size: var(--fs-sm);
+    font-weight: 500;
+    color: var(--bud-ink);
+    background: oklch(0.99 0.01 130 / 0.7);
+    padding: 3px var(--s3);
+    border-radius: 999px;
+    letter-spacing: 0;
+  }
+  .band-blurb {
+    margin-top: var(--s3);
+    font-size: var(--fs-h3);
+    line-height: 1.6;
+    max-width: 48ch;
+    opacity: 0.86;
+  }
+
+  /* 暗区：芽位区间胶囊改深底浅字，保持可读 */
+  :global(.zone.is-dark) .band-range {
+    color: var(--bud);
+    background: oklch(0.3 0.03 60 / 0.55);
+  }
+
+  @media (max-width: 560px) {
+    .band {
+      grid-template-columns: 1fr;
+      gap: var(--s2);
+    }
+    .band-no {
+      font-size: 3.2rem;
+    }
+  }
+</style>

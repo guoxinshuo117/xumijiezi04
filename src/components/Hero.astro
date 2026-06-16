@@ -1,0 +1,134 @@
+---
+// 首屏（全屏）：核心隐喻 —— 深度 = 芽位；向下滚动 = 沿 Raunkiær 高度轴下潜。
+interface Props {
+  count: number; // 当前收录株数
+}
+const { count } = Astro.props;
+---
+
+<header class="hero" id="top">
+  <div class="wrap hero-wrap">
+    <p class="u-label kicker" data-reveal>Raunkiær Life-form Profile · 生活型剖面</p>
+
+    <h1 class="u-display hero-title" data-reveal>
+      <span class="line">向下，</span>
+      <span class="line">是一次<em>下潜</em>。</span>
+    </h1>
+
+    <p class="lede" data-reveal>
+      把土壤剖面立起来读——<strong>深度，就是芽位</strong>。<br />
+      沿 Raunkiær 更新芽高度轴向下，从高举入空的乔木，
+      到埋进土里的根状茎，再到只剩种子越冬的一年生草。
+    </p>
+
+    <p class="meta u-data" data-reveal>
+      现录 {count} 株 · 五型 Raunkiær 生活型 · 自上而下按芽位排列
+    </p>
+
+    <p class="scroll-hint u-label" data-reveal aria-hidden="true">
+      向下滚动 <span class="arrow">↓</span>
+    </p>
+  </div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100dvh;
+    display: grid;
+    align-items: center;
+    padding-block: var(--s8);
+    overflow: hidden;
+  }
+  /* 背景由固定「活体土柱」舞台承担（天光→冠层柔绿 + 天光束），此处不再自绘。 */
+
+  .hero-wrap {
+    max-width: var(--wrap-max);
+  }
+
+  .kicker {
+    margin-bottom: var(--s4);
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero-title {
+    font-size: var(--fs-hero);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--s5);
+    max-width: 16ch;
+    color: #fff;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+  .hero-title .line {
+    display: block;
+  }
+  .hero-title em {
+    font-style: normal;
+    color: var(--bud-ink);
+    position: relative;
+  }
+  /* 「下潜」二字下方一道芽绿，呼应主题 */
+  .hero-title em::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.04em;
+    height: 0.12em;
+    background: var(--bud);
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+
+  .lede {
+    font-size: var(--fs-h3);
+    line-height: 1.75;
+    max-width: 50ch;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  }
+  .lede strong {
+    color: var(--bud-ink);
+    font-weight: 600;
+  }
+
+  .meta {
+    margin-top: var(--s5);
+    font-size: var(--fs-sm);
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  .scroll-hint {
+    margin-top: var(--s7);
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s2);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+  .scroll-hint .arrow {
+    display: inline-block;
+    animation: nudge 1.8s var(--ease-out) infinite;
+  }
+  @keyframes nudge {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateY(5px);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint .arrow {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProfileAxis from '../components/ProfileAxis.astro';
+import Hero from '../components/Hero.astro';
+import TypeBand from '../components/TypeBand.astro';
+import PlantCard from '../components/PlantCard.astro';
+import Crossing from '../components/Crossing.astro';
+import Spectrum from '../components/Spectrum.astro';
+import LandscapeBackground from '../components/LandscapeBackground.astro';
+import { LIFEFORM_ORDER, LIFEFORM_META } from '../lib/lifeform';
+
+const all = await getCollection('plants');
+
+// 按 Raunkiær 五型分组，组内按 order 排序（自上而下：高位芽 → 一年生）。
+const grouped = LIFEFORM_ORDER.map((lf) => ({
+  lifeform: lf,
+  meta: LIFEFORM_META[lf],
+  plants: all
+    .filter((p) => p.data.lifeform === lf)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+---
+
+<Base>
+  <LandscapeBackground />
+
+  <div class="page">
+    <ProfileAxis />
+
+    <main id="main">
+      <Hero count={all.length} />
+
+      {
+        grouped.map(
+          ({ lifeform, meta, plants }, i) =>
+            plants.length > 0 && (
+              <>
+                {/* 穿过地面：地上型 → 地下/种子型之间 */}
+                {lifeform === 'cryptophyte' && <Crossing />}
+
+                <section
+                  class:list={['zone', `zone--${lifeform}`, { 'is-dark': meta.dark }]}
+                  id={lifeform}
+                  data-zone={lifeform}
+                  data-zone-index={i}
+                  data-depth={meta.depthLabel}
+                >
+                  <div class="wrap">
+                    <TypeBand lifeform={lifeform} index={i + 1} />
+                    <div class="cards">
+                      {plants.map((p) => (
+                        <PlantCard plant={p} />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              </>
+            )
+        )
+      }
+
+      <Spectrum />
+
+      <footer class="site-foot">
+        <div class="wrap">
+          <p class="u-label">生活型剖面 · Raunkiær Life-form Profile</p>
+          <p class="foot-lede">
+            以土壤剖面深度为隐喻的植物生活型导览。分类依 C. Raunkiær (1934)
+            更新芽高度系统五型。
+          </p>
+        </div>
+      </footer>
+    </main>
+  </div>
+</Base>
+
+<style>
+  .page {
+    position: relative;
+    z-index: 1;
+  }
+  /* 桌面：内容整体让出左侧「深度核」宽度（背景由固定舞台承担，无需再 bleed） */
+  @media (min-width: 861px) {
+    .page {
+      padding-left: var(--axis-w);
+    }
+  }
+
+  main {
+    min-width: 0;
+  }
+
+  /* ---------- 区段：纯排版容器，背景全部交给固定舞台（无分区背景、无缝） ----------
+     每区注入一组 --card-* 玻璃变量；PlantCard 消费它们，明/暗区自适应、文字恒可读。 */
+  /* 全部区域文字反白，统一深色磨砂玻璃（高级黑调） */
+  .zone {
+    position: relative;
+    padding-block: clamp(var(--s8), 20vh, 200px);
+    color: oklch(0.97 0.012 85);
+
+    --card-bg: rgba(15, 15, 15, 0.2); /* 更高透明度的深色玻璃 */
+    --card-bd: rgba(255, 255, 255, 0.2); /* 依然保持清晰的白边 */
+    --card-hl: oklch(1 0 0 / 0.08); 
+    --card-fg: oklch(0.95 0.012 90);
+    --card-fg-2: oklch(0.82 0.02 85);
+    --card-fg-3: oklch(0.68 0.02 82);
+    --card-line: oklch(1 0 0 / 0.14);
+    --card-accent: oklch(0.86 0.15 140); /* 春绿高亮 */
+  }
+
+  .wrap {
+    max-width: var(--wrap-max);
+    margin-inline: auto;
+    padding-inline: var(--s5) var(--s6);
+  }
+  @media (max-width: 860px) {
+    .wrap {
+      padding-inline: var(--s4);
+    }
+  }
+
+  .cards {
+    display: grid;
+    gap: clamp(var(--s6), 8vw, var(--s8));
+  }
+
+  /* ---------- 页脚：深处之上的暗玻璃压脚，确保文字可读 ---------- */
+  .site-foot {
+    position: relative;
+    padding-block: var(--s8) var(--s7);
+    color: oklch(0.9 0.02 85);
+    background: linear-gradient(
+      180deg,
+      transparent,
+      oklch(0.16 0.03 58 / 0.55) 55%
+    );
+  }
+  .foot-lede {
+    margin-top: var(--s2);
+    max-width: 52ch;
+    color: oklch(0.82 0.02 82);
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+// 基础布局：自托管字体 + 设计令牌 + 全局样式。
+// 双栏「下沉纵轴」栅格在 P3 接入；本层先保证字体与样式系统就位。
+
+// —— 自托管字体（fontsource，按 unicode-range 自动分包，浏览器按需取片）——
+import '@fontsource-variable/fraunces'; // 拉丁展示 / 学名（opsz + ital 变体轴）
+import '@fontsource/ibm-plex-mono/400.css'; // 数据读数
+import '@fontsource/noto-serif-sc/400.css'; // 中文正文
+import '@fontsource/noto-serif-sc/600.css'; // 中文标题
+import '@fontsource/noto-sans-sc/400.css'; // 标签 / UI
+import '@fontsource/noto-sans-sc/500.css';
+
+// —— 设计系统（顺序：tokens 必须先于 global）——
+import '../styles/tokens.css';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '生活型剖面 · 一次向下的下潜',
+  description = '以土壤剖面深度为隐喻，沿 Raunkiær 芽位高度轴向下下潜，认识身边的十二株植物。',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <!-- 揭示防闪：JS 在场时先隐藏 [data-reveal]，由 descent.ts 揭示 -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body>
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-outline" aria-hidden="true"></div>
+    <div class="paper-grain" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <slot />
+
+    <!-- 「下潜」滚动引擎（Lenis + GSAP；Astro 打包，defer） -->
+    <script>
+      import '../scripts/descent.ts';
+      import { initCursor } from '../scripts/cursor.ts';
+      
+      initCursor();
+    </script>
+  </body>
+</html>

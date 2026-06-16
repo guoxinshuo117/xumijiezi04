@@ -1,0 +1,112 @@
+---
+// 「穿过地面」（签名节点）：地上型 → 地下/种子型之间的 0cm 分界。
+// 全宽、绿（上）→ 土（下）的明暗反转地平线；descent.ts 在此触发反转转场。
+---
+
+<section class="crossing" data-crossing aria-label="穿过地面 0cm 分界">
+  <div class="horizon" aria-hidden="true"></div>
+  <div class="wrap crossing-wrap">
+    <p class="cross-kicker u-label">0 cm · GROUND LINE</p>
+    <p class="cross-title u-display">穿过地面</p>
+    <p class="cross-sub">以下为地下芽与种子库——更新芽藏入土壤，借大地的热惯性越冬。</p>
+    <span class="cross-arrow" aria-hidden="true">↓</span>
+  </div>
+</section>
+
+<style>
+  .crossing {
+    position: relative;
+    min-height: 56vh;
+    display: grid;
+    align-items: center;
+    padding-block: var(--s8);
+    overflow: hidden;
+    color: oklch(0.97 0.012 85);
+  }
+  /* 文字可读：在穿地中调（绿→土）之上压一层柔和暗角，托住标题 */
+  .crossing::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: radial-gradient(
+      62% 72% at 32% 50%,
+      oklch(0.18 0.03 60 / 0.38),
+      transparent 72%
+    );
+  }
+  /* 绿→土的连续反转由固定舞台承担；此层只承载发光地平线 */
+  .horizon {
+    position: absolute;
+    z-index: -1;
+    inset-block: 0;
+    left: 0;
+    width: 100vw;
+  }
+  @media (min-width: 861px) {
+    .horizon {
+      left: calc(-1 * var(--axis-w));
+    }
+  }
+  /* 一道发亮地平线 */
+  .horizon::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 42%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(0.98 0.04 110 / 0.8),
+      transparent
+    );
+    box-shadow: 0 0 22px 3px oklch(0.95 0.05 110 / 0.35);
+  }
+
+  .crossing-wrap {
+    max-width: var(--wrap-max);
+  }
+  .cross-kicker {
+    color: oklch(0.96 0.02 100 / 0.85);
+    letter-spacing: 0.16em;
+    margin-bottom: var(--s3);
+  }
+  .cross-title {
+    font-size: var(--fs-display);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 14px oklch(0.2 0.03 60 / 0.4);
+  }
+  .cross-sub {
+    margin-top: var(--s3);
+    font-size: var(--fs-h3);
+    line-height: 1.6;
+    max-width: 44ch;
+    color: oklch(0.94 0.016 85 / 0.92);
+  }
+  .cross-arrow {
+    display: block;
+    margin-top: var(--s5);
+    font-size: 1.6rem;
+    color: oklch(0.95 0.03 110 / 0.8);
+    animation: sink 2s var(--ease-out) infinite;
+  }
+  @keyframes sink {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.55;
+    }
+    50% {
+      transform: translateY(7px);
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cross-arrow {
+      animation: none;
+    }
+  }
+</style>

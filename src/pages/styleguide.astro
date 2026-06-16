@@ -1,0 +1,278 @@
+---
+// /styleguide —— 设计系统肉眼验收页（P1 验证用，非站点正式页面）。
+// 验收：色板纪律、土壤剖面渐变、字体角色、间距阶梯、芽位量规。
+import Base from '../layouts/Base.astro';
+
+const swatches = [
+  { name: '--paper', label: '纸 paper', cls: 'sw-paper' },
+  { name: '--paper-2', label: '次纸 paper-2', cls: 'sw-paper2' },
+  { name: '--ink', label: '墨 ink', cls: 'sw-ink' },
+  { name: '--ink-2', label: '次墨 ink-2', cls: 'sw-ink2' },
+  { name: '--soil-1', label: '表土 soil-1', cls: 'sw-soil1' },
+  { name: '--soil-2', label: '心土 soil-2', cls: 'sw-soil2' },
+  { name: '--soil-3', label: '底土 soil-3', cls: 'sw-soil3' },
+  { name: '--foliage', label: '植被 foliage', cls: 'sw-foliage' },
+  { name: '--seed', label: '种子 seed', cls: 'sw-seed' },
+  { name: '--bud', label: '芽 bud（唯一强调）', cls: 'sw-bud' },
+];
+
+const spaces = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'];
+---
+
+<Base title="设计系统 · Styleguide">
+  <main class="sg" id="main">
+    <header class="sg-head">
+      <p class="u-label">Design System · 内部验收</p>
+      <h1 class="u-display">生活型剖面 · 设计令牌</h1>
+      <p class="u-muted">全场低彩度大地色，唯一高彩度春绿只给「芽」。</p>
+    </header>
+
+    <!-- 色板 -->
+    <section class="sg-block">
+      <h2>色板 Palette</h2>
+      <div class="sw-grid">
+        {
+          swatches.map((s) => (
+            <figure class="sw">
+              <div class={`sw-chip ${s.cls}`} />
+              <figcaption>
+                <strong>{s.label}</strong>
+                <code class="u-data">{s.name}</code>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 土壤剖面深度渐变 -->
+    <section class="sg-block">
+      <h2>土壤剖面深度渐变 Profile Gradient</h2>
+      <div class="profile-bar">
+        <span class="profile-tag tag-top">地表 0cm</span>
+        <span class="profile-tag tag-mid">心土</span>
+        <span class="profile-tag tag-deep">底土</span>
+      </div>
+    </section>
+
+    <!-- 字体角色 -->
+    <section class="sg-block">
+      <h2>字体角色 Typography</h2>
+      <div class="type-rows">
+        <p class="u-display">下潜 · Descend 2025</p>
+        <h3 class="type-cn">中文标题 思源/Noto Serif SC 600</h3>
+        <p>
+          中文正文，思源宋体 400，行高 1.75，字距 0.01em。芽位是植物熬过不良季节的生存策略——这一行用来检查中文正文的呼吸感与可读性。
+        </p>
+        <p class="u-latin">Ilex cornuta · Cinnamomum camphora 1879</p>
+        <p class="u-label">Lifeform · 高位芽 Phanerophyte</p>
+        <p class="u-data">budPos: −15 cm　height: 0.4–1.2 m　1234567890</p>
+      </div>
+    </section>
+
+    <!-- 间距阶梯 -->
+    <section class="sg-block">
+      <h2>间距阶梯 8pt Grid</h2>
+      <div class="space-rows">
+        {
+          spaces.map((v) => (
+            <div class="space-row">
+              <code class="u-data">{v}</code>
+              <span class="space-bar" style={`width: var(${v})`} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 芽位量规预览 -->
+    <section class="sg-block">
+      <h2>迷你芽位量规 Bud Gauge</h2>
+      <div class="gauge-row">
+        <div class="gauge" style="--bud-frac: 0.86" data-demo="高位芽 +250cm"></div>
+        <div class="gauge" style="--bud-frac: 0.62" data-demo="地上芽 +15cm"></div>
+        <div class="gauge" style="--bud-frac: 0.5" data-demo="地面芽 0cm"></div>
+        <div class="gauge" style="--bud-frac: 0.28" data-demo="隐芽 −10cm"></div>
+        <div class="gauge" style="--bud-frac: 0.12" data-demo="一年生 种子"></div>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .sg {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding: var(--s7) var(--s5) var(--s8);
+  }
+  .sg-head {
+    display: grid;
+    gap: var(--s2);
+    margin-bottom: var(--s7);
+  }
+  .sg-head .u-display {
+    font-size: var(--fs-display);
+  }
+  .sg-block {
+    margin-block: var(--s7);
+    display: grid;
+    gap: var(--s4);
+  }
+  .sg-block h2 {
+    font-size: var(--fs-h2);
+    padding-bottom: var(--s2);
+    border-bottom: 1px solid var(--line);
+  }
+
+  /* 色板 */
+  .sw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--s4);
+  }
+  .sw {
+    display: grid;
+    gap: var(--s2);
+  }
+  .sw-chip {
+    height: 72px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line-2);
+    box-shadow: var(--shadow-1);
+  }
+  .sw figcaption {
+    display: grid;
+    gap: 2px;
+    font-size: var(--fs-sm);
+  }
+  .sw figcaption code {
+    font-size: var(--fs-xs);
+    color: var(--ink-2);
+  }
+  .sw-paper {
+    background: var(--paper);
+  }
+  .sw-paper2 {
+    background: var(--paper-2);
+  }
+  .sw-ink {
+    background: var(--ink);
+  }
+  .sw-ink2 {
+    background: var(--ink-2);
+  }
+  .sw-soil1 {
+    background: var(--soil-1);
+  }
+  .sw-soil2 {
+    background: var(--soil-2);
+  }
+  .sw-soil3 {
+    background: var(--soil-3);
+  }
+  .sw-foliage {
+    background: var(--foliage);
+  }
+  .sw-seed {
+    background: var(--seed);
+  }
+  .sw-bud {
+    background: var(--bud);
+  }
+
+  /* 剖面渐变 */
+  .profile-bar {
+    position: relative;
+    height: 320px;
+    border-radius: var(--radius);
+    background: var(--profile-gradient);
+    border: 1px solid var(--line-2);
+  }
+  .profile-tag {
+    position: absolute;
+    left: var(--s3);
+    font-family: var(--mono);
+    font-size: var(--fs-xs);
+    padding: 2px var(--s2);
+    border-radius: var(--radius-sm);
+    background: oklch(1 0 0 / 0.55);
+    color: var(--ink);
+  }
+  .tag-top {
+    top: var(--s3);
+  }
+  .tag-mid {
+    top: 50%;
+  }
+  .tag-deep {
+    bottom: var(--s3);
+    color: var(--paper);
+    background: oklch(0 0 0 / 0.25);
+  }
+
+  /* 字体 */
+  .type-rows {
+    display: grid;
+    gap: var(--s3);
+  }
+  .type-rows .u-display {
+    font-size: var(--fs-h1);
+  }
+  .type-cn {
+    font-size: var(--fs-h3);
+  }
+
+  /* 间距 */
+  .space-rows {
+    display: grid;
+    gap: var(--s2);
+  }
+  .space-row {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    align-items: center;
+    gap: var(--s3);
+  }
+  .space-bar {
+    height: 16px;
+    background: var(--foliage);
+    border-radius: var(--radius-sm);
+  }
+
+  /* 芽位量规：竖向小剖面 + 芽绿点 */
+  .gauge-row {
+    display: flex;
+    gap: var(--s5);
+    flex-wrap: wrap;
+  }
+  .gauge {
+    position: relative;
+    width: 46px;
+    height: 160px;
+    border-radius: var(--radius-sm);
+    background: var(--profile-gradient);
+    border: 1px solid var(--line-2);
+  }
+  /* 地表线（0cm） */
+  .gauge::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px dashed oklch(1 0 0 / 0.5);
+  }
+  /* 芽位标记点（唯一芽绿） */
+  .gauge::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 50%);
+    bottom: calc(var(--bud-frac) * 100%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bud);
+    box-shadow: 0 0 0 4px var(--bud-soft);
+  }
+</style>

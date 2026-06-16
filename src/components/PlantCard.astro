@@ -1,0 +1,244 @@
+---
+// 植物卡：磨砂玻璃浮在「活体土柱」背景之上，透出背景、暗区自适应（深色玻璃 + 浅字）。
+// 明/暗由所在 .zone 注入的 --card-* 变量决定（见 index.astro），文字恒可读。
+// 大「全株」主图 + 字段表 + 迷你芽位量规 + 正文。
+// data-* 锚点供 descent.ts 联动（卡片揭示 / 纵轴标记）。
+import { render, type CollectionEntry } from 'astro:content';
+import PhotoFrame from './PhotoFrame.astro';
+import { LIFEFORM_META } from '../lib/lifeform';
+
+interface Props {
+  plant: CollectionEntry<'plants'>;
+}
+
+const { plant } = Astro.props;
+const d = plant.data;
+const meta = LIFEFORM_META[d.lifeform];
+const { Content } = await render(plant);
+
+// 数据字段（标签 → 值）。
+const fields: Array<[string, string]> = [
+  ['株高', d.height],
+  ['茎', d.stem],
+  ['光照', d.light],
+  ['土壤', d.soil],
+  ['群落层次', d.layer],
+  ['物候', d.phenology],
+  ['分布', d.distribution],
+  ['伴生', d.companions.join('、')],
+];
+---
+
+<article
+  class="card"
+  id={plant.id}
+  data-plant-id={plant.id}
+  data-lifeform={d.lifeform}
+  data-bud-pos={d.budPos}
+  data-reveal
+>
+  <header class="card-head">
+    <div class="title">
+      <h3 class="name u-display">{d.name}</h3>
+      <p class="u-latin latin">{d.latin}</p>
+    </div>
+    <p class="u-label family">{d.family} · {meta.zh}</p>
+  </header>
+
+  <div class="card-body">
+    <div class="media">
+      <PhotoFrame
+        photos={d.photos}
+        name={d.name}
+        altHint={`${meta.zh}，${d.budHeight}`}
+        tint={meta.tint}
+      />
+
+      <!-- 迷你芽位量规：小剖面上用芽绿点出芽位 -->
+      <div class="gauge-block">
+        <div class="gauge" style={`--bud-frac:${meta.axisFrac}`} aria-hidden="true">
+          <span class="gauge-ground"></span>
+          <span class="gauge-bud"></span>
+        </div>
+        <p class="gauge-read u-data">
+          芽位 <strong>{d.budHeight}</strong><span class="gauge-cm">{d.budPos} cm</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="info">
+      <dl class="data-grid">
+        {
+          fields.map(([k, v]) => (
+            <div class="datum">
+              <dt class="u-label">{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .card {
+    /* 磨砂玻璃：透出背景、暗区自适应（变量来自所在 .zone） */
+    color: var(--card-fg);
+    padding: clamp(var(--s4), 3vw, var(--s6));
+    background: var(--card-bg);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+    border: 1px solid var(--card-bd);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--glass-shadow), var(--card-hl);
+    scroll-margin-top: var(--s5);
+    transition:
+      box-shadow var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
+  }
+  .card:hover {
+    box-shadow:
+      var(--glass-shadow),
+      var(--card-hl),
+      0 38px 72px -30px oklch(0.14 0.05 60 / 0.5);
+    transform: translateY(-2px);
+  }
+
+  .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s2) var(--s4);
+    padding-bottom: var(--s3);
+    border-bottom: 1px solid var(--card-line);
+    margin-bottom: var(--s5);
+  }
+  .title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s3);
+  }
+  .name {
+    font-size: var(--fs-h2);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .latin {
+    font-size: var(--fs-body);
+    color: var(--card-fg-2);
+  }
+  .family {
+    color: var(--card-fg-2);
+  }
+
+  .card-body {
+    display: grid;
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+    gap: clamp(var(--s4), 3vw, var(--s6));
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .card-body {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* 媒体列 */
+  .media {
+    display: grid;
+    gap: var(--s4);
+    align-content: start;
+  }
+  .gauge-block {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--s3);
+  }
+  .gauge {
+    position: relative;
+    height: 84px;
+    border-radius: var(--radius-sm);
+    background: var(--profile-gradient);
+    border: 1px solid var(--card-line);
+  }
+  .gauge-ground {
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    border-top: 1px dashed oklch(1 0 0 / 0.55);
+  }
+  .gauge-bud {
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--bud-frac) * 100%);
+    transform: translate(-50%, 50%);
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--bud);
+    box-shadow:
+      0 0 0 4px var(--bud-soft),
+      0 0 10px oklch(0.82 0.16 135 / 0.5);
+  }
+  .gauge-read {
+    font-size: var(--fs-xs);
+    color: var(--card-fg-2);
+    text-align: right;
+    line-height: 1.4;
+  }
+  .gauge-read strong {
+    display: block;
+    font-size: var(--fs-sm);
+    color: var(--card-accent);
+  }
+  .gauge-cm {
+    color: var(--card-fg-3);
+  }
+
+  /* 信息列 */
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s3) var(--s5);
+    margin: 0 0 var(--s5);
+  }
+  @media (max-width: 480px) {
+    .data-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .datum dt {
+    margin-bottom: 3px;
+    color: var(--card-fg-2);
+  }
+  .datum dd {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+
+  .prose {
+    padding-top: var(--s4);
+    border-top: 1px solid var(--card-line);
+    line-height: var(--lh-body);
+    font-size: var(--fs-body);
+  }
+  .prose :global(p) {
+    margin-bottom: var(--s3);
+  }
+  .prose :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .prose :global(strong) {
+    color: var(--card-accent);
+    font-weight: 600;
+  }
+</style>

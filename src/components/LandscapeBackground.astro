@@ -1,0 +1,54 @@
+---
+// 纪实生态全屏景观背景：根据当前所处的生活型，平滑淡入淡出相应的生态风景大图。
+// 拥有极高质感的国家地理式暗调滤镜，确保文字可读性。
+
+const bgImages = [
+  { id: 'phanerophyte', src: '/images/bg_phanerophyte.png' },
+  { id: 'chamaephyte', src: '/images/bg_chamaephyte.png' },
+  { id: 'hemicryptophyte', src: '/images/bg_hemicryptophyte.png' },
+  { id: 'cryptophyte', src: '/images/bg_cryptophyte.png' },
+  { id: 'therophyte', src: '/images/bg_therophyte.png' },
+];
+---
+
+<div class="landscape-bg" aria-hidden="true">
+  {
+    bgImages.map((bg, i) => (
+      <div 
+        class="landscape-layer" 
+        data-bg-layer={bg.id}
+        style={`background-image: url('${bg.src}'); opacity: ${i === 0 ? 1 : 0}; z-index: ${5 - i};`}
+      />
+    ))
+  }
+  <div class="landscape-overlay"></div>
+</div>
+
+<style>
+  .landscape-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    background: oklch(0.15 0.02 260); /* 深邃底色 */
+  }
+  .landscape-layer {
+    position: absolute;
+    inset: -5%; /* 微量溢出用于实现滚动视差放大 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.8s var(--ease-out);
+    will-change: opacity, transform;
+  }
+  /* 高级暗调遮罩：让复杂的风景图暗下来，保证前景文字和毛玻璃卡片的极度清晰 */
+  .landscape-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.5) 100%);
+    z-index: 10;
+    pointer-events: none;
+  }
+</style>

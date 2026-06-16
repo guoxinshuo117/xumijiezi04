@@ -1,0 +1,134 @@
+/* =============================================================
+   设计令牌 · 生活型剖面
+   纪律：全场低彩度大地色，唯一高彩度春绿只给「芽」。
+   色彩用 OKLCH 管理，保证土壤剖面深度渐变在感知上均匀、不发灰。
+   ============================================================= */
+
+:root {
+  /* ---------- 纸 / 墨 ---------- */
+  --paper: oklch(0.975 0.015 85); /* 更暖的纸白，提升高级感 */
+  --paper-2: oklch(0.945 0.014 84);
+  --ink: oklch(0.255 0.02 60);
+  --ink-2: oklch(0.45 0.018 60);
+  --ink-3: oklch(0.6 0.014 62);
+  --line: oklch(0.8 0.01 70);
+  --line-2: oklch(0.87 0.008 72);
+
+  /* ---------- 土壤剖面三段（更深邃的对比） ---------- */
+  --soil-1: oklch(0.75 0.05 75);
+  --soil-2: oklch(0.48 0.05 60);
+  --soil-3: oklch(0.25 0.05 50);
+
+  /* 纵轴 / 「穿地」深度渐变（surface=纸面，向下入土） */
+  --profile-gradient: linear-gradient(
+    180deg,
+    var(--paper) 0%,
+    var(--soil-1) 18%,
+    var(--soil-2) 55%,
+    var(--soil-3) 100%
+  );
+
+  /* ---------- 结构性植被绿（克制、低彩度，≠ 芽绿） ---------- */
+  --foliage: oklch(0.46 0.06 145); /* 沉静森林绿，用于结构 / 图标 */
+  --canopy: oklch(0.38 0.055 150);
+
+  --seed: oklch(0.7 0.05 70); /* 种子 / 一年生 暖褐调 */
+
+  /* ---------- 唯一高彩度强调：芽（春绿） ---------- */
+  /* 全站仅此一处高 chroma —— 荧光绿，极致吸引视线。 */
+  --bud: oklch(0.85 0.18 135); /* 更明亮的高彩度荧光绿 */
+  --bud-soft: oklch(0.85 0.18 135 / 0.25);
+  --bud-ink: oklch(0.45 0.12 138);
+  --bud-glow: 0 0 20px oklch(0.85 0.18 135 / 0.5); /* 新增：光晕效果 */
+
+  /* ---------- 字体角色 ---------- */
+  /* Noto Serif/Sans SC 与思源宋体/黑体同源（Adobe/Google），字形一致。 */
+  --serif: 'Noto Serif SC', 'Source Han Serif SC', '思源宋体', serif;
+  --latin: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  /* 展示字：拉丁走 Fraunces，中文回落到 Noto Serif SC（避免系统字体不一致） */
+  --display: 'Fraunces Variable', 'Noto Serif SC', 'Source Han Serif SC', serif;
+  --sans: 'Noto Sans SC', 'Source Han Sans SC', '思源黑体', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 字号阶梯（流体，clamp 适配桌面↔手机） */
+  --fs-hero: clamp(3.5rem, 2rem + 7vw, 8.5rem); /* 更巨大的全屏 Hero 标题 */
+  --fs-display: clamp(2.8rem, 1.8rem + 4.5vw, 5rem);
+  --fs-h1: clamp(2.2rem, 1.6rem + 2.8vw, 3.6rem);
+  --fs-h2: clamp(1.5rem, 1.25rem + 1.2vw, 2.2rem);
+  --fs-h3: 1.25rem;
+  --fs-body: 1.0625rem;
+  --fs-sm: 0.9375rem;
+  --fs-xs: 0.8125rem;
+
+  --lh-tight: 1.2;
+  --lh-body: 1.8; /* 增加行高，提升呼吸感 */
+  --tracking-cn: 0.03em; /* 增加中文字距 */
+  --tracking-label: 0.15em; /* 增加小写字母字距 */
+
+  /* ---------- 间距：8pt 栅格 ---------- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 16px;
+  --s4: 24px;
+  --s5: 32px;
+  --s6: 48px;
+  --s7: 64px;
+  --s8: 96px;
+
+  /* ---------- 布局 ---------- */
+  --axis-w: 240px; /* 左栏「深度核」宽（含读数标签） */
+  --content-max: 720px; /* 长正文最佳阅读宽（仅用于纯文字块） */
+  --wrap-max: 1280px; /* 内容外框最大宽（用足屏幕） */
+  --bp-collapse: 860px; /* 纵轴折叠断点 */
+
+  /* ---------- 磨砂玻璃系统（取代白板，浮于"活体土柱"背景之上） ----------
+     纪律：卡片不再是白纸，而是透出背景的玻璃；明/暗区两套，文字恒可读。
+     具体明暗由 index.astro 在 .zone / .zone.is-dark 上注入 --card-* 变量。 */
+  /* 明显通透：更薄的颜色底，更大的模糊半径 */
+  --glass-bg: oklch(0.97 0.012 95 / 0.22);
+  --glass-bg-dark: oklch(0.22 0.03 64 / 0.3);
+  --glass-border: oklch(1 0 0 / 0.25);
+  --glass-border-dark: oklch(1 0 0 / 0.15);
+  --glass-highlight: inset 0 1px 0 oklch(1 0 0 / 0.5);
+  --glass-highlight-dark: inset 0 1px 0 oklch(1 0 0 / 0.2);
+  --glass-blur: 24px;
+  --glass-shadow:
+    0 4px 12px oklch(0.2 0.03 60 / 0.08),
+    0 40px 80px -20px oklch(0.16 0.04 60 / 0.6);
+  --card-border: oklch(0.4 0.02 70 / 0.1);
+
+  /* ---------- 「活体土柱」连续兜底渐变（无 JS / 无 WebGL / reduced-motion 也无缝） ----------
+     与 descent-stage.ts 着色器同一套 OKLab 色带；--depth 平移给 CSS 模式做深度联动。 */
+  --descent-ramp: linear-gradient(
+    180deg,
+    oklch(0.9 0.07 235) 0%,
+    oklch(0.95 0.03 96) 16%,
+    oklch(0.87 0.06 118) 28%,
+    oklch(0.8 0.075 98) 40%,
+    oklch(0.64 0.078 76) 52%,
+    oklch(0.5 0.066 65) 66%,
+    oklch(0.35 0.05 58) 82%,
+    oklch(0.22 0.03 52) 100%
+  );
+
+  /* ---------- 场景层（沉浸式下潜的氛围） ---------- */
+  --scene-vignette: radial-gradient(
+    130% 90% at 50% -10%,
+    transparent 38%,
+    oklch(0.2 0.03 60 / 0.14) 100%
+  );
+
+  /* ---------- 圆角 / 阴影 / 层级 ---------- */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+  --shadow-1: 0 1px 2px oklch(0.3 0.02 60 / 0.06);
+  --shadow-2: 0 8px 30px oklch(0.3 0.02 60 / 0.1);
+  --z-axis: 10;
+  --z-overlay: 50;
+
+  /* ---------- 动效（P4 接管；此处仅占位时长 / 缓动） ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-1: 180ms;
+  --dur-2: 420ms;
+}
