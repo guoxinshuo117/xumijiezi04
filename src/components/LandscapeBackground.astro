@@ -2,12 +2,19 @@
 // 纪实生态全屏景观背景：根据当前所处的生活型，平滑淡入淡出相应的生态风景大图。
 // 拥有极高质感的国家地理式暗调滤镜，确保文字可读性。
 
+const getBase = () => {
+  let base = import.meta.env.BASE_URL;
+  if (!base.endsWith('/')) base += '/';
+  return base;
+};
+const base = getBase();
+
 const bgImages = [
-  { id: 'phanerophyte', src: '/images/bg_phanerophyte.png' },
-  { id: 'chamaephyte', src: '/images/bg_chamaephyte.png' },
-  { id: 'hemicryptophyte', src: '/images/bg_hemicryptophyte.png' },
-  { id: 'cryptophyte', src: '/images/bg_cryptophyte.png' },
-  { id: 'therophyte', src: '/images/bg_therophyte.png' },
+  { id: 'phanerophyte', src: `${base}images/bg_phanerophyte.png` },
+  { id: 'chamaephyte', src: `${base}images/bg_chamaephyte.png` },
+  { id: 'hemicryptophyte', src: `${base}images/bg_hemicryptophyte.png` },
+  { id: 'cryptophyte', src: `${base}images/bg_cryptophyte.png` },
+  { id: 'therophyte', src: `${base}images/bg_therophyte.png` },
 ];
 ---
 
