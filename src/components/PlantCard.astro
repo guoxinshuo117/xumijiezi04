@@ -1,7 +1,7 @@
 ---
 // 植物卡：磨砂玻璃浮在「活体土柱」背景之上，透出背景、暗区自适应（深色玻璃 + 浅字）。
 // 明/暗由所在 .zone 注入的 --card-* 变量决定（见 index.astro），文字恒可读。
-// 大「全株」主图 + 字段表 + 迷你芽位量规 + 正文。
+// 顶部全宽等高照片行 + 介绍区（正文主栏 | 数据档案副栏）。
 // data-* 锚点供 descent.ts 联动（卡片揭示 / 纵轴标记）。
 import { render, type CollectionEntry } from 'astro:content';
 import PhotoFrame from './PhotoFrame.astro';
@@ -57,17 +57,6 @@ const fields: Array<[string, string]> = [
     </div>
 
     <div class="info">
-      <!-- 迷你芽位量规：小剖面上用芽绿点出芽位 -->
-      <div class="gauge-block">
-        <div class="gauge" style={`--bud-frac:${meta.axisFrac}`} aria-hidden="true">
-          <span class="gauge-ground"></span>
-          <span class="gauge-bud"></span>
-        </div>
-        <p class="gauge-read u-data">
-          芽位 <strong>{d.budHeight}</strong><span class="gauge-cm">{d.budPos} cm</span>
-        </p>
-      </div>
-
       <dl class="data-grid">
         {
           fields.map(([k, v]) => (
@@ -150,68 +139,23 @@ const fields: Array<[string, string]> = [
     display: block;
   }
 
-  /* 介绍（量规 / 数据 / 正文）在下 */
+  /* 介绍（数据条在上、正文双栏在下）：纵向堆叠，两块都占满整宽 */
   .info {
     display: grid;
-    gap: var(--s5);
-  }
-  .gauge-block {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: var(--s3);
-    max-width: 460px; /* 整宽下保持量规为一条紧凑指示带 */
-  }
-  .gauge {
-    position: relative;
-    height: 84px;
-    border-radius: var(--radius-sm);
-    background: var(--profile-gradient);
-    border: 1px solid var(--card-line);
-  }
-  .gauge-ground {
-    position: absolute;
-    inset-inline: 0;
-    top: 50%;
-    border-top: 1px dashed oklch(1 0 0 / 0.55);
-  }
-  .gauge-bud {
-    position: absolute;
-    left: 50%;
-    bottom: calc(var(--bud-frac) * 100%);
-    transform: translate(-50%, 50%);
-    width: 13px;
-    height: 13px;
-    border-radius: 50%;
-    background: var(--bud);
-    box-shadow:
-      0 0 0 4px var(--bud-soft),
-      0 0 10px oklch(0.82 0.16 135 / 0.5);
-  }
-  .gauge-read {
-    font-size: var(--fs-xs);
-    color: var(--card-fg-2);
-    text-align: right;
-    line-height: 1.4;
-  }
-  .gauge-read strong {
-    display: block;
-    font-size: var(--fs-sm);
-    color: var(--card-accent);
-  }
-  .gauge-cm {
-    color: var(--card-fg-3);
+    gap: clamp(var(--s5), 4vw, var(--s6));
   }
 
-  /* 信息列 */
+  /* 数据条：整宽自适应横向网格（紧凑约 4 列），底部分隔线与正文分开 */
   .data-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: var(--s3) var(--s5);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--s4) var(--s5);
     margin: 0;
+    padding-bottom: clamp(var(--s4), 3vw, var(--s5));
+    border-bottom: 1px solid var(--card-line);
   }
   .datum dt {
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     color: var(--card-fg-2);
   }
   .datum dd {
@@ -220,15 +164,22 @@ const fields: Array<[string, string]> = [
     line-height: 1.55;
   }
 
+  /* 正文：数据条之下，桌面分两栏填满整宽、中缝细线；窄屏单栏 */
   .prose {
-    padding-top: var(--s4);
-    border-top: 1px solid var(--card-line);
     line-height: var(--lh-body);
-    font-size: var(--fs-body);
-    max-width: 72ch;
+    font-size: clamp(1.125rem, 1.06rem + 0.4vw, 1.275rem);
+  }
+  @media (min-width: 768px) {
+    .prose {
+      columns: 2;
+      column-gap: clamp(var(--s6), 5vw, var(--s7));
+      column-rule: 1px solid var(--card-line);
+      orphans: 3;
+      widows: 3;
+    }
   }
   .prose :global(p) {
-    margin-bottom: var(--s3);
+    margin: 0 0 var(--s4);
   }
   .prose :global(p:last-child) {
     margin-bottom: 0;
