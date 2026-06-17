@@ -54,6 +54,9 @@ const fields: Array<[string, string]> = [
         tint={meta.tint}
       />
 
+    </div>
+
+    <div class="info">
       <!-- 迷你芽位量规：小剖面上用芽绿点出芽位 -->
       <div class="gauge-block">
         <div class="gauge" style={`--bud-frac:${meta.axisFrac}`} aria-hidden="true">
@@ -64,9 +67,7 @@ const fields: Array<[string, string]> = [
           芽位 <strong>{d.budHeight}</strong><span class="gauge-cm">{d.budPos} cm</span>
         </p>
       </div>
-    </div>
 
-    <div class="info">
       <dl class="data-grid">
         {
           fields.map(([k, v]) => (
@@ -138,29 +139,28 @@ const fields: Array<[string, string]> = [
     color: var(--card-fg-2);
   }
 
+  /* 单列竖向：照片在上、介绍在下 */
   .card-body {
     display: grid;
-    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
-    gap: clamp(var(--s4), 3vw, var(--s6));
-    align-items: start;
-  }
-  @media (max-width: 720px) {
-    .card-body {
-      grid-template-columns: 1fr;
-    }
+    gap: clamp(var(--s5), 4vw, var(--s6));
   }
 
-  /* 媒体列 */
+  /* 媒体（照片）在上，占满整卡宽 */
   .media {
+    display: block;
+  }
+
+  /* 介绍（量规 / 数据 / 正文）在下 */
+  .info {
     display: grid;
-    gap: var(--s4);
-    align-content: start;
+    gap: var(--s5);
   }
   .gauge-block {
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: var(--s3);
+    max-width: 460px; /* 整宽下保持量规为一条紧凑指示带 */
   }
   .gauge {
     position: relative;
@@ -206,14 +206,9 @@ const fields: Array<[string, string]> = [
   /* 信息列 */
   .data-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: var(--s3) var(--s5);
-    margin: 0 0 var(--s5);
-  }
-  @media (max-width: 480px) {
-    .data-grid {
-      grid-template-columns: 1fr;
-    }
+    margin: 0;
   }
   .datum dt {
     margin-bottom: 3px;
@@ -230,6 +225,7 @@ const fields: Array<[string, string]> = [
     border-top: 1px solid var(--card-line);
     line-height: var(--lh-body);
     font-size: var(--fs-body);
+    max-width: 72ch;
   }
   .prose :global(p) {
     margin-bottom: var(--s3);

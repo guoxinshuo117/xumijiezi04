@@ -50,10 +50,8 @@ export const SPECTRUM_ROWS: SpectrumRow[] = [
   {
     key: 'site',
     label: '本站收录',
-    sub: '15 株 · 占位均匀',
-    note: '待换本地样地实测',
-    placeholder: true,
-    values: { phanerophyte: 20, chamaephyte: 20, hemicryptophyte: 20, cryptophyte: 20, therophyte: 20 },
+    sub: '14 株 · 本样地',
+    values: { phanerophyte: 22, chamaephyte: 21, hemicryptophyte: 22, cryptophyte: 21, therophyte: 14 },
   },
 ];
 

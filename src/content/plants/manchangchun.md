@@ -1,26 +1,30 @@
 ---
-name: 蔓长春
+name: 蔓长春花
 latin: Vinca major
 family: 夹竹桃科
 lifeform: chamaephyte
-budHeight: '0–25cm'
-budPos: 15
-height: 匍匐茎长 0.3–1 m，株高 < 25 cm
-stem: 半木质，匍匐—斜升，节上生根
-light: 耐荫，半荫最佳
-soil: 湿润、富含腐殖质、排水良好
+budHeight: '0–25 cm'
+budPos: 10
+height: 蔓性常绿半灌木，匍匐茎可达 1 m
+stem: 蔓生草质—半木质茎，触地生根
+light: 耐荫，亦耐半阳
+soil: 喜湿润肥沃，适应性强
 companions:
+  - 常春藤
   - 麦冬
   - 八角金盘
-  - 常春藤
-distribution: 原产欧洲地中海；中国引种作地被
-phenology: 花期 3–5 月，偶秋季复花
+distribution: 原产欧洲；中国各地引种作地被
 layer: 地被层
+phenology: 花期 3–5 月，蓝紫色花单生叶腋
 photos:
-  - ../../assets/photos/manchangchun-01.jpg
-order: 1
+  - ../../assets/photos/manchangchun-yuanjing.jpg
+  - ../../assets/photos/manchangchun-zhongjing.jpg
+  - ../../assets/photos/manchangchun-texie.jpg
+order: 3
 ---
 
-地上芽植物的更新芽位于地表以上、却不超过 25 cm——夹在高位芽与地面芽之间的"过渡型"。蔓长春以**半木质的匍匐与斜升茎**把芽托在贴近地面的暖层：冬季近地表残存的地热与雪被，正好为这一高度的芽提供保护；而它又比纯草本更早恢复生长。
+蔓长春花把更新芽压得更低。它的蔓茎沿地面铺展，**触地的节点即生根**，像织一张常绿的网，把芽牢牢固定在**贴地的 0–25 cm** 层；冬季地表辐射与枯落物，为这些低位芽提供了最廉价的保温。
 
-节上生根的匍匐扩展，使蔓长春能在林下荫蔽、人为干扰频繁的绿地中迅速连片成毯。它正是本剖面里"地上芽"一型的代表——既享木质茎的早发优势，又不付出高位芽那样高昂的支撑与防冻成本。
+**常绿对生的革质叶**配上无性蔓延，让它以极低的姿态快速占地、压制杂草，把有限的光照与地表空间一次圈占——这是地上芽地被植物典型的"以面积换生存"。蓝紫色花点缀其间，花期不长却清雅。
+
+正因耐荫、扩展快、近乎免管理，蔓长春是林下与边坡的明星地被；也要注意它强劲的无性扩张，需以边界加以约束。

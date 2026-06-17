@@ -4,23 +4,27 @@ latin: Oxalis corymbosa
 family: 酢浆草科
 lifeform: cryptophyte
 budHeight: 地下
-budPos: -6
-height: 株高 15–30 cm
-stem: 无地上茎，地下具鳞茎
+budPos: -5
+height: 多年生草本，10–25 cm
+stem: 地下具鳞茎，母鳞茎上多生小鳞茎
 light: 喜光，耐半荫
-soil: 湿润、疏松、排水良好的壤土
+soil: 适应性强，耐旱耐瘠
 companions:
-  - 鸢尾
+  - 三角酢浆草
   - 麦冬
-  - 香樟
-distribution: 原产南美；中国各地归化、常作地被
-layer: 草本层
-phenology: 花期 3–12 月，盛于春秋
+  - 白花三叶草
+distribution: 原产南美；中国各地归化，常见于绿地路缘
+layer: 草本层 / 地被
+phenology: 花期 3–12 月，伞形花序粉红
 photos:
-  - ../../assets/photos/honghuacujiangcao-01.jpg
+  - ../../assets/photos/honghuacujiangcao-yuanjing.jpg
+  - ../../assets/photos/honghuacujiangcao-zhongjing.jpg
+  - ../../assets/photos/honghuacujiangcao-texie.jpg
 order: 3
 ---
 
-红花酢浆草以**地下鳞茎**度过不良季节——休眠芽包裹在土表以下的鳞茎内，借土壤热惯性避寒避旱，是隐芽中的鳞茎类（geophyte）。母鳞茎周围不断分生小鳞茎，使它迅速成丛扩繁。
+红花酢浆草同样把芽藏进**地下鳞茎**，却把繁殖也压进了土里：母鳞茎上能大量分生**小鳞茎**，每一颗都是一枚现成的越冬芽兼繁殖体。地上的掌状三出复叶可在不良季枯萎，而地下的鳞茎群安然待时——这正是地下芽"深藏不露"的生存逻辑。
 
-三出掌状复叶夜间与阴天闭合，是对光与水分的精细调节；伞形花序的玫红花期极长。地下鳞茎既是越冬器官也是营养繁殖单位，让它在城市绿地中既耐扰动又易扩散。（占位条目，数据待核实）
+**鳞茎休眠**帮它躲过严寒与干旱，**小鳞茎的海量分生**又让它一旦得势便迅速成片。耐旱耐瘠、花期极长，使它在城市绿地、路缘与花坛缝隙中都能立足：好看好养是其优点，一旦逸生便极难清除则是代价。
+
+正因如此，红花酢浆草既是常用的观花地被，也是各地常见的**归化逸生**种，管理上需防其蔓延入侵。

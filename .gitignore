@@ -27,3 +27,5 @@ pnpm-debug.log*
 
 # local screenshots / scratch
 .scratch/
+# local temp (build TMP / headless chrome profile)
+.tmp/
